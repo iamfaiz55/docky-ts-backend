@@ -23,14 +23,14 @@ mongoose.connect(MONGO_URI)
 
 app.use(express.json())
 app.use("/api/auth", authRoute)
-app.use("/api/doc", userProtected, docRoutes)
+app.use("/api/doc", docRoutes)
 
 // app.use("*", async (req: Request, res: Response) => {
 //     res.status(404).json({ message: "Resource Not Found" });
 
 // })
 app.get("*", (req: Request, res: Response) => {
-    res.redirect(`https://docky-ts.vercel.app/not-fount`);
+    res.redirect(`https://docky-ts-frontend.vercel.app/not-fount`);
 });
 
 
