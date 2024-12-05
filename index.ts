@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 app.use(cookieParser())
 app.use(cors({
-    origin: "https://docky-ts.vercel.app",
+    origin: "https://docky-ts-frontend.vercel.app",
     // origin: "http://localhost:5173",
     credentials: true,
 }));
