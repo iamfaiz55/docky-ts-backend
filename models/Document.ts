@@ -11,7 +11,8 @@ import mongoose, { Document as MongooseDocument } from "mongoose";
 
 interface IDocument extends MongooseDocument {
     profile: string;
-    name: string;
+    userName: string;
+    password: string;
     age: string;
     address: string;
     birthDate: string;
@@ -28,7 +29,11 @@ const userSchema = new mongoose.Schema<IDocument>(
             type: String,
             required: true,
         },
-        name: {
+        userName: {
+            type: String,
+            required: true,
+        },
+        password: {
             type: String,
             required: true,
         },

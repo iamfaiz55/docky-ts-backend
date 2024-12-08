@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 import dotenv from "dotenv"
+import Document from "../models/Document";
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_KEY || "";
@@ -21,7 +22,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
 
 
 
-        return res.status(201).json({ message: "User registered successfully." });
+        return res.status(201).json({ message: "Admin registered successfully." });
     } catch (error) {
         return res.status(500).json({ message: "Something went wrong", error });
     }
@@ -47,7 +48,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
         console.log(isPasswordValid);
 
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-        res.cookie("user", token, {
+        res.cookie("admin", token, {
             maxAge: 86400000,
             httpOnly: true,
             secure: false,
@@ -60,8 +61,47 @@ export const login = async (req: Request, res: Response): Promise<any> => {
 };
 
 export const logout = async (req: Request, res: Response): Promise<any> => {
+    res.clearCookie("admin");
+    return res.json({ message: "Logout successful." });
+};
+
+
+export const UserLogin = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { userName, password } = req.body;
+        // console.log("new", req.body);
+
+
+        const user = await Document.findOne({ userName });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid userName." });
+        }
+
+
+
+        const isPasswordValid = user.password == password
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalidpassword." });
+        }
+        // console.log(isPasswordValid);
+
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+        res.cookie("user", token, {
+            maxAge: 86400000,
+            httpOnly: true,
+            secure: false,
+
+        });
+        return res.status(200).json({ message: "Login successful", result: user });
+    } catch (error) {
+        return res.status(500).json({ message: "Something went wrong", error });
+    }
+};
+
+export const userLogout = async (req: Request, res: Response): Promise<any> => {
     res.clearCookie("user");
     return res.json({ message: "Logout successful." });
 };
+
 
 
